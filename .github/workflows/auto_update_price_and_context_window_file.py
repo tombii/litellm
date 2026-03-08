@@ -174,26 +174,47 @@ def transform_vercel_ai_gateway_data(data):
     transformed = {}
     for row in data:
         pricing = row.get("pricing", {})
-        obj = {
-            "max_tokens": row["context_window"],
-            "input_cost_per_token": float(pricing.get("input", 0) or 0),
-            "output_cost_per_token": float(pricing.get("output", 0) or 0),
-            'max_output_tokens': row.get('max_tokens', row["context_window"]),
-            'max_input_tokens': row["context_window"],
-        }
+        model_id = row["id"]
+        context_window = row.get("context_window", 0)
+        max_output = row.get("max_tokens", context_window)
 
-        # Handle cache pricing if available
+        # Detect mode from model type field or name patterns
+        model_type = row.get("type", "")
+        mid = model_id.lower()
+        if model_type == "embedding" or "embed" in mid:
+            mode = "embedding"
+        elif model_type == "image" or any(x in mid for x in ["imagen", "flux", "recraft", "dall-e", "imagine"]):
+            mode = "image_generation"
+        elif model_type == "video" or any(x in mid for x in ["veo", "wan-v", "seedance", "kling", "sora"]):
+            mode = "video_generation"
+        else:
+            mode = "chat"
+
+        obj = {"litellm_provider": "vercel_ai_gateway", "mode": mode}
+
+        if context_window:
+            obj["max_input_tokens"] = context_window
+            obj["max_tokens"] = context_window
+        if max_output and max_output != context_window:
+            obj["max_output_tokens"] = max_output
+
+        # Token pricing (chat / embedding models)
+        if pricing.get("input") is not None:
+            obj["input_cost_per_token"] = float(pricing["input"])
+        if pricing.get("output") is not None:
+            obj["output_cost_per_token"] = float(pricing["output"])
+
+        # Per-image pricing
+        if pricing.get("image") is not None:
+            obj["input_cost_per_image"] = float(pricing["image"])
+
+        # Cache pricing
         if pricing.get("input_cache_read") is not None:
-            obj['cache_read_input_token_cost'] = float(f"{float(pricing['input_cache_read']):e}")
-
+            obj["cache_read_input_token_cost"] = float(f"{float(pricing['input_cache_read']):e}")
         if pricing.get("input_cache_write") is not None:
-            obj['cache_creation_input_token_cost'] = float(f"{float(pricing['input_cache_write']):e}")
+            obj["cache_creation_input_token_cost"] = float(f"{float(pricing['input_cache_write']):e}")
 
-        mode = "embedding" if "embedding" in row["id"].lower() else "chat"
-
-        obj.update({"litellm_provider": "vercel_ai_gateway", "mode": mode})
-
-        transformed[f'vercel_ai_gateway/{row["id"]}'] = obj
+        transformed[f'vercel_ai_gateway/{model_id}'] = obj
 
     return transformed
 
