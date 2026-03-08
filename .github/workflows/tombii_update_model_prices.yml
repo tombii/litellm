@@ -14,10 +14,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Use a PAT so the pushed branch can trigger further workflows
-          # and so gh pr create can open a cross-fork PR
+          # Check out upstream main directly so we're always working against
+          # the latest BerriAI code, not the fork's potentially diverged main
           token: ${{ secrets.GH_PAT }}
-          repository: tombii/litellm
+          repository: BerriAI/litellm
           ref: main
 
       - uses: actions/setup-python@v5
@@ -26,12 +26,6 @@ jobs:
 
       - name: Install dependencies
         run: pip install aiohttp
-
-      - name: Sync fork main with upstream main
-        run: |
-          git remote add upstream https://github.com/BerriAI/litellm.git
-          git fetch upstream main
-          git merge upstream/main --no-edit
 
       - name: Run model prices update script
         run: python ".github/workflows/auto_update_price_and_context_window_file.py"
@@ -50,7 +44,9 @@ jobs:
           fi
 
           git commit -m "chore: update model_prices_and_context_window.json ($(date +'%Y-%m-%d'))"
-          git push origin "$BRANCH"
+          # Push to the fork, not to BerriAI origin
+          git remote add fork https://x-access-token:${{ secrets.GH_PAT }}@github.com/tombii/litellm.git
+          git push fork "$BRANCH"
 
           gh pr create \
             --repo BerriAI/litellm \
