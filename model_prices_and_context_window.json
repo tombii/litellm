@@ -31337,7 +31337,7 @@
         "max_input_tokens": 0,
         "max_output_tokens": 0,
         "max_tokens": 0,
-        "mode": "chat",
+        "mode": "embedding",
         "output_cost_per_token": 0.0
     },
     "vercel_ai_gateway/anthropic/claude-3-haiku": {
@@ -31670,7 +31670,7 @@
         "max_input_tokens": 0,
         "max_output_tokens": 0,
         "max_tokens": 0,
-        "mode": "chat",
+        "mode": "embedding",
         "output_cost_per_token": 0.0
     },
     "vercel_ai_gateway/deepseek/deepseek-r1": {
@@ -31944,7 +31944,7 @@
         "max_input_tokens": 0,
         "max_output_tokens": 0,
         "max_tokens": 0,
-        "mode": "chat",
+        "mode": "embedding",
         "output_cost_per_token": 0.0
     },
     "vercel_ai_gateway/mistral/devstral-small": {
@@ -32010,7 +32010,7 @@
         "max_input_tokens": 0,
         "max_output_tokens": 0,
         "max_tokens": 0,
-        "mode": "chat",
+        "mode": "embedding",
         "output_cost_per_token": 0.0
     },
     "vercel_ai_gateway/mistral/mistral-large": {
@@ -44169,7 +44169,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 480,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.02
     },
     "vercel_ai_gateway/meituan/longcat-flash-thinking": {
         "max_tokens": 128000,
@@ -44187,7 +44188,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "embedding"
     },
     "vercel_ai_gateway/arcee-ai/trinity-mini": {
         "max_tokens": 131072,
@@ -44205,7 +44206,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.04
     },
     "vercel_ai_gateway/deepseek/deepseek-v3.1": {
         "max_tokens": 163840,
@@ -44233,7 +44235,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 32000,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "embedding"
     },
     "vercel_ai_gateway/openai/gpt-5.4-pro": {
         "max_tokens": 200000,
@@ -44251,7 +44253,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/voyage/voyage-4-large": {
         "max_tokens": 32000,
@@ -44260,7 +44262,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 32000,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "embedding"
     },
     "vercel_ai_gateway/openai/gpt-image-1-mini": {
         "max_tokens": 0,
@@ -44270,7 +44272,7 @@
         "max_input_tokens": 0,
         "cache_read_input_token_cost": 2e-07,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation"
     },
     "vercel_ai_gateway/xai/grok-4.1-fast-non-reasoning": {
         "max_tokens": 2000000,
@@ -44328,7 +44330,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/alibaba/qwen3.5-plus": {
         "max_tokens": 1000000,
@@ -44348,7 +44350,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/alibaba/qwen3-embedding-4b": {
         "max_tokens": 32768,
@@ -44385,7 +44387,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/alibaba/qwen3-embedding-8b": {
         "max_tokens": 32768,
@@ -44422,7 +44424,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "embedding"
     },
     "vercel_ai_gateway/klingai/kling-v2.6-motion-control": {
         "max_tokens": 0,
@@ -44431,7 +44433,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/alibaba/qwen3-vl-instruct": {
         "max_tokens": 256000,
@@ -44500,7 +44502,7 @@
         "max_input_tokens": 0,
         "cache_read_input_token_cost": 1.25e-06,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation"
     },
     "vercel_ai_gateway/bytedance/seedance-v1.0-lite-i2v": {
         "max_tokens": 0,
@@ -44509,7 +44511,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/klingai/kling-v2.6-t2v": {
         "max_tokens": 0,
@@ -44518,7 +44520,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/google/gemini-3.1-flash-lite-preview": {
         "max_tokens": 1000000,
@@ -44545,7 +44547,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 512,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.04
     },
     "vercel_ai_gateway/klingai/kling-v3.0-i2v": {
         "max_tokens": 0,
@@ -44554,7 +44557,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/anthropic/claude-sonnet-4.6": {
         "max_tokens": 1000000,
@@ -44574,7 +44577,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/bytedance/seedance-v1.0-pro": {
         "max_tokens": 0,
@@ -44583,7 +44586,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/openai/gpt-5.1-codex-mini": {
         "max_tokens": 400000,
@@ -44640,7 +44643,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 32000,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "embedding"
     },
     "vercel_ai_gateway/google/imagen-4.0-generate-001": {
         "max_tokens": 480,
@@ -44649,7 +44652,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 480,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.04
     },
     "vercel_ai_gateway/xai/grok-imagine-video": {
         "max_tokens": 0,
@@ -44658,7 +44662,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation"
     },
     "vercel_ai_gateway/openai/gpt-5": {
         "max_tokens": 400000,
@@ -44695,7 +44699,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.05
     },
     "vercel_ai_gateway/openai/gpt-5.1-instant": {
         "max_tokens": 128000,
@@ -44745,7 +44750,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.022
     },
     "vercel_ai_gateway/alibaba/qwen3-235b-a22b-thinking": {
         "max_tokens": 262114,
@@ -44774,7 +44780,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.04
     },
     "vercel_ai_gateway/minimax/minimax-m2.1": {
         "max_tokens": 204800,
@@ -44804,7 +44811,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "embedding"
     },
     "vercel_ai_gateway/google/veo-3.0-fast-generate-001": {
         "max_tokens": 0,
@@ -44813,7 +44820,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/openai/gpt-5.1-codex": {
         "max_tokens": 400000,
@@ -44832,7 +44839,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/openai/gpt-5-nano": {
         "max_tokens": 400000,
@@ -44851,7 +44858,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.02
     },
     "vercel_ai_gateway/prime-intellect/intellect-3": {
         "max_tokens": 131072,
@@ -44869,7 +44877,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/alibaba/qwen3-max": {
         "max_tokens": 262144,
@@ -44905,7 +44913,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/moonshotai/kimi-k2.5": {
         "max_tokens": 256000,
@@ -44933,7 +44941,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "embedding"
     },
     "vercel_ai_gateway/google/gemini-3.1-pro-preview": {
         "max_tokens": 1000000,
@@ -44998,7 +45006,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.25
     },
     "vercel_ai_gateway/openai/gpt-5.3-codex": {
         "max_tokens": 400000,
@@ -45037,7 +45046,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/openai/codex-mini": {
         "max_tokens": 200000,
@@ -45065,7 +45074,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.07
     },
     "vercel_ai_gateway/openai/gpt-5-mini": {
         "max_tokens": 400000,
@@ -45132,7 +45142,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.06
     },
     "vercel_ai_gateway/mistral/devstral-2": {
         "max_tokens": 256000,
@@ -45189,7 +45200,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/alibaba/wan-v2.6-r2v-flash": {
         "max_tokens": 0,
@@ -45198,7 +45209,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/deepseek/deepseek-v3.2": {
         "max_tokens": 128000,
@@ -45217,7 +45228,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "embedding"
     },
     "vercel_ai_gateway/google/gemini-3.1-flash-image-preview": {
         "max_tokens": 131072,
@@ -45282,7 +45293,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 480,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.06
     },
     "vercel_ai_gateway/mistral/mistral-medium": {
         "max_tokens": 128000,
@@ -45310,7 +45322,7 @@
         "max_input_tokens": 0,
         "cache_read_input_token_cost": 1.25e-06,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation"
     },
     "vercel_ai_gateway/alibaba/wan-v2.6-i2v": {
         "max_tokens": 0,
@@ -45319,7 +45331,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/voyage/voyage-3.5": {
         "max_tokens": 0,
@@ -45328,7 +45340,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "embedding"
     },
     "vercel_ai_gateway/openai/gpt-oss-20b": {
         "max_tokens": 128000,
@@ -45376,7 +45388,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/deepseek/deepseek-v3.2-thinking": {
         "max_tokens": 128000,
@@ -45395,7 +45407,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/nvidia/nemotron-nano-9b-v2": {
         "max_tokens": 131072,
@@ -45451,7 +45463,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 512,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.08
     },
     "vercel_ai_gateway/voyage/voyage-finance-2": {
         "max_tokens": 0,
@@ -45460,7 +45473,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "embedding"
     },
     "vercel_ai_gateway/openai/gpt-4o-mini-search-preview": {
         "max_tokens": 128000,
@@ -45527,7 +45540,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/openai/gpt-5.1-codex-max": {
         "max_tokens": 400000,
@@ -45555,7 +45568,7 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "video_generation"
     },
     "vercel_ai_gateway/recraft/recraft-v4": {
         "max_tokens": 0,
@@ -45564,7 +45577,8 @@
         "max_output_tokens": 0,
         "max_input_tokens": 0,
         "litellm_provider": "vercel_ai_gateway",
-        "mode": "chat"
+        "mode": "image_generation",
+        "input_cost_per_image": 0.04
     },
     "vercel_ai_gateway/openai/gpt-5.4": {
         "max_tokens": 200000,
