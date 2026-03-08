@@ -1,9 +1,10 @@
 import asyncio
 import aiohttp
 import json
+import re
 
 # Asynchronously fetch data from a given URL
-async def fetch_data(url):
+async def fetch_data(url, result_key='data'):
     try:
         # Create an asynchronous session
         async with aiohttp.ClientSession() as session:
@@ -13,9 +14,10 @@ async def fetch_data(url):
                 resp.raise_for_status()
                 # Parse the response JSON
                 resp_json = await resp.json()
-                print("Fetch the data from URL.")
-                # Return the 'data' field from the JSON response
-                return resp_json['data']
+                print(f"Fetched data from {url}")
+                if result_key:
+                    return resp_json[result_key]
+                return resp_json
     except Exception as e:
         # Print an error message if fetching data fails
         print("Error fetching data from URL:", e)
@@ -23,7 +25,9 @@ async def fetch_data(url):
 
 # Synchronize local data with remote data
 def sync_local_data_with_remote(local_data, remote_data):
-    # Update existing keys in local_data with values from remote_data
+    # Update existing keys: merge remote fields into local, preserving any
+    # manually set fields that the remote API doesn't return (e.g.
+    # supports_assistant_prefill, tool_use_system_prompt_tokens, etc.)
     for key in (set(local_data) & set(remote_data)):
         local_data[key].update(remote_data[key])
 
@@ -72,12 +76,96 @@ def transform_openrouter_data(data):
             "mode": "chat"
         })
 
-        # Add the 'supports_vision' field if the modality is 'multimodal'
-        if row.get('architecture', {}).get('modality') == 'multimodal':
+        # Add the 'supports_vision' field if image is in input modalities
+        input_modalities = row.get('architecture', {}).get('input_modalities', [])
+        if 'image' in input_modalities:
             obj['supports_vision'] = True
+
+        if 'audio' in input_modalities:
+            obj['supports_audio_input'] = True
 
         # Use a composite key to store the transformed object
         transformed[f'openrouter/{row["id"]}'] = obj
+
+    return transformed
+
+
+# Detect mode for NVIDIA NIM models based on name patterns
+_NIM_EMBED_PATTERNS = ['embed', 'embedqa', 'bge-m3', 'arctic-embed', 'nv-embed', 'nemoretriever', 'embedcode', 'nvclip']
+_NIM_RERANK_PATTERNS = ['rerank', 'rerankqa']
+_NIM_VLM_PATTERNS = ['vision', 'vl-', '-vl-', '-vl/', 'vila', 'paligemma', 'deplot', 'kosmos', 'multimodal', 'fuyu', 'neva']
+_NIM_REASONING_PATTERNS = ['thinking', 'qwq', 'flash-reasoning', 'magistral']
+
+
+def _nim_detect_mode(model_id):
+    mid = model_id.lower()
+    for p in _NIM_RERANK_PATTERNS:
+        if p in mid:
+            return 'rerank'
+    for p in _NIM_EMBED_PATTERNS:
+        if p in mid:
+            return 'embedding'
+    return 'chat'
+
+
+def _nim_detect_vision(model_id):
+    mid = model_id.lower()
+    return any(p in mid for p in _NIM_VLM_PATTERNS)
+
+
+def _nim_detect_reasoning(model_id):
+    mid = model_id.lower()
+    if '/deepseek-r1' in mid or '-r1-' in mid or mid.endswith('-r1'):
+        return True
+    return any(p in mid for p in _NIM_REASONING_PATTERNS)
+
+
+def _nim_detect_context(model_id):
+    m = re.search(r'[-_](\d+)k[-_]', model_id.lower())
+    if m:
+        return int(m.group(1)) * 1024
+    return None
+
+
+# Update the existing models and add missing models for NVIDIA NIM
+def transform_nvidia_nim_data(data):
+    transformed = {}
+    seen = set()
+    for row in data:
+        mid = row['id']
+        if mid in seen:
+            continue
+        seen.add(mid)
+
+        mode = _nim_detect_mode(mid)
+        obj = {
+            'litellm_provider': 'nvidia_nim',
+            'mode': mode,
+            'input_cost_per_token': 0.0,
+        }
+
+        if mode == 'chat':
+            obj['output_cost_per_token'] = 0.0
+            ctx = _nim_detect_context(mid)
+            if ctx:
+                obj['max_input_tokens'] = ctx
+                obj['max_tokens'] = ctx
+            if _nim_detect_vision(mid):
+                obj['supports_vision'] = True
+            if _nim_detect_reasoning(mid):
+                obj['supports_reasoning'] = True
+            instruct_families = ['instruct', 'chat', 'llama', 'mistral', 'mixtral',
+                                  'nemotron', 'qwen', 'deepseek', 'gemma', 'phi',
+                                  'granite', 'falcon', 'codellama', 'starcoder']
+            if any(x in mid.lower() for x in instruct_families):
+                obj['supports_function_calling'] = True
+                obj['supports_tool_choice'] = True
+        elif mode == 'rerank':
+            obj['input_cost_per_query'] = 0.0
+            obj['output_cost_per_token'] = 0.0
+        # embedding: input_cost_per_token only (already set above)
+
+        transformed[f'nvidia_nim/{mid}'] = obj
 
     return transformed
 
@@ -85,24 +173,24 @@ def transform_openrouter_data(data):
 def transform_vercel_ai_gateway_data(data):
     transformed = {}
     for row in data:
+        pricing = row.get("pricing", {})
         obj = {
             "max_tokens": row["context_window"],
-            "input_cost_per_token": float(row["pricing"]["input"]),
-            "output_cost_per_token": float(row["pricing"]["output"]),
-            'max_output_tokens': row['max_tokens'],
+            "input_cost_per_token": float(pricing.get("input", 0) or 0),
+            "output_cost_per_token": float(pricing.get("output", 0) or 0),
+            'max_output_tokens': row.get('max_tokens', row["context_window"]),
             'max_input_tokens': row["context_window"],
         }
 
         # Handle cache pricing if available
-        if "pricing" in row:
-            if "input_cache_read" in row["pricing"] and row["pricing"]["input_cache_read"] is not None:
-                obj['cache_read_input_token_cost'] = float(f"{float(row['pricing']['input_cache_read']):e}")
-            
-            if "input_cache_write" in row["pricing"] and row["pricing"]["input_cache_write"] is not None:
-                obj['cache_creation_input_token_cost'] = float(f"{float(row['pricing']['input_cache_write']):e}")
+        if pricing.get("input_cache_read") is not None:
+            obj['cache_read_input_token_cost'] = float(f"{float(pricing['input_cache_read']):e}")
+
+        if pricing.get("input_cache_write") is not None:
+            obj['cache_creation_input_token_cost'] = float(f"{float(pricing['input_cache_write']):e}")
 
         mode = "embedding" if "embedding" in row["id"].lower() else "chat"
-        
+
         obj.update({"litellm_provider": "vercel_ai_gateway", "mode": mode})
 
         transformed[f'vercel_ai_gateway/{row["id"]}'] = obj
@@ -128,26 +216,41 @@ def load_local_data(file_path):
 
 def main():
     local_file_path = "model_prices_and_context_window.json"  # Path to the local data file
-    openrouter_url = "https://openrouter.ai/api/v1/models"  # URL to fetch OpenRouter data
-    vercel_ai_gateway_url = "https://ai-gateway.vercel.sh/v1/models"  # URL to fetch Vercel AI Gateway data
+    openrouter_url = "https://openrouter.ai/api/v1/models"
+    vercel_ai_gateway_url = "https://ai-gateway.vercel.sh/v1/models"
+    nvidia_nim_url = "https://integrate.api.nvidia.com/v1/models"
 
     # Load local data from file
     local_data = load_local_data(local_file_path)
-    
-    # Fetch OpenRouter data
-    openrouter_data = asyncio.run(fetch_data(openrouter_url))
-    # Transform the fetched OpenRouter data
-    openrouter_data = transform_openrouter_data(openrouter_data)
-    
-    # Fetch Vercel AI Gateway data
-    vercel_data = asyncio.run(fetch_data(vercel_ai_gateway_url))
-    # Transform the fetched Vercel AI Gateway data
-    vercel_data = transform_vercel_ai_gateway_data(vercel_data)
-    
-    # Combine both datasets
-    all_remote_data = {**openrouter_data, **vercel_data}
 
-    # If both local and openrouter data are available, synchronize and save
+    all_remote_data = {}
+
+    # Fetch and transform OpenRouter data
+    openrouter_raw = asyncio.run(fetch_data(openrouter_url, result_key='data'))
+    if openrouter_raw:
+        all_remote_data.update(transform_openrouter_data(openrouter_raw))
+        print(f"OpenRouter: {len(openrouter_raw)} models")
+    else:
+        print("WARNING: Failed to fetch OpenRouter data")
+
+    # Fetch and transform Vercel AI Gateway data
+    vercel_raw = asyncio.run(fetch_data(vercel_ai_gateway_url, result_key='data'))
+    if vercel_raw:
+        all_remote_data.update(transform_vercel_ai_gateway_data(vercel_raw))
+        print(f"Vercel AI Gateway: {len(vercel_raw)} models")
+    else:
+        print("WARNING: Failed to fetch Vercel AI Gateway data")
+
+    # Fetch and transform NVIDIA NIM data
+    nvidia_nim_raw = asyncio.run(fetch_data(nvidia_nim_url, result_key='data'))
+    if nvidia_nim_raw:
+        all_remote_data.update(transform_nvidia_nim_data(nvidia_nim_raw))
+        print(f"NVIDIA NIM: {len(nvidia_nim_raw)} models")
+    else:
+        print("WARNING: Failed to fetch NVIDIA NIM data")
+
+    print(f"Total remote entries to sync: {len(all_remote_data)}")
+
     if local_data and all_remote_data:
         sync_local_data_with_remote(local_data, all_remote_data)
         write_to_file(local_file_path, local_data)
