@@ -12,13 +12,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Check out upstream BerriAI main — this is the base we will patch and PR against
       - uses: actions/checkout@v4
         with:
-          # Check out upstream main directly so we're always working against
-          # the latest BerriAI code, not the fork's potentially diverged main
           token: ${{ secrets.GH_PAT }}
           repository: BerriAI/litellm
           ref: main
+          path: upstream
+
+      # Check out the fork to get our updated update script
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: tombii/litellm
+          ref: main
+          path: fork
+
+      # Overlay our script onto the upstream checkout, then work entirely in upstream/
+      - name: Overlay update script from fork
+        run: |
+          cp fork/.github/workflows/auto_update_price_and_context_window_file.py \
+             upstream/.github/workflows/auto_update_price_and_context_window_file.py
 
       - uses: actions/setup-python@v5
         with:
@@ -28,9 +42,11 @@ jobs:
         run: pip install aiohttp
 
       - name: Run model prices update script
+        working-directory: upstream
         run: python ".github/workflows/auto_update_price_and_context_window_file.py"
 
       - name: Commit and push branch, open PR to BerriAI
+        working-directory: upstream
         run: |
           BRANCH="auto-update-model-prices-$(date +'%Y-%m-%d')"
           git config user.name "github-actions[bot]"
@@ -44,7 +60,7 @@ jobs:
           fi
 
           git commit -m "chore: update model_prices_and_context_window.json ($(date +'%Y-%m-%d'))"
-          # Push to the fork, not to BerriAI origin
+          # Push the branch to the fork, then open a cross-fork PR to BerriAI
           git remote add fork https://x-access-token:${{ secrets.GH_PAT }}@github.com/tombii/litellm.git
           git push fork "$BRANCH"
 
